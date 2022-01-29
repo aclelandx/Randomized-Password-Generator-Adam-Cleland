@@ -7,7 +7,7 @@ let userSelections = {
   numbers: undefined,
 };
 
-// Defining the base characters to target into an array.
+// Defining the base characters to be used; and then converting it into their own arrays.
 let characterSet = {
   lowerCase: `abcdefghijklmnopqrstuvwxyz`.toLowerCase(),
   upperCase: `abcdefghijklmnopqrstuvwxyz`.toUpperCase(),
@@ -15,7 +15,6 @@ let characterSet = {
   special: `!"#$%&'()*+,-./:;<=>?@][^_{|}~`
 };
 
-// takes the character set and turning them into arrays.
 const arraySet = {
   lowerCase: characterSet.lowerCase.split(``),
   upperCase: characterSet.upperCase.split(``),
@@ -23,8 +22,9 @@ const arraySet = {
   special: characterSet.special.split(``)
 };
 
-// used as the targeted array following the parameters set by the users choices.
-let masterArray = []
+// used as undefined variables to be filled out for the final output.
+let masterArray = [];
+let randomPassword = ``;
 
 // Allows the user to select which characters they would like their new password to contain, along with the length of said password.
 function selectionsInterface() {
@@ -50,7 +50,7 @@ function selectionsInterface() {
   }; return;
 };
 
-
+// updates global object to match choices.
 function oneRequired() {
   // Changes the values inside the object userSelections to true or false base on user input.
   userSelections.lowerCase = characterType(`Lower-case Characters`, `(Example : qwerty)`, arraySet.lowerCase);
@@ -74,32 +74,39 @@ function characterType(charTypeName, example, arrayChoice) {
   // Adds the users selected choices into the masterArray variable.
   if (choice === true) {
     masterArray.unshift(arrayChoice);
+    console.log();
   };
   return choice;
 };
 
-function mathRandomizeSelection(min , max) {
-  return Math.round(Math.random() * (max - min) + min);
-}
+// Mathematical formula to pick a size at random
+function mathRandomizeSelection(max) {
+  return Math.round(Math.random() * max);
+};
 
+// Resets the current value of randomPassword to blank; flattens the masterArray to all be in one line then picks the amount of integers specified by the user and adds them to the randomPassword output
 function generatePassword() {
-  
-}
+  randomPassword = ``;
+  masterArray = masterArray.flat(4);
+  let integerMax = masterArray.length;
+  for (var i = 0; i < userSelections.characterLength; i++) {
+    let randomInteger = masterArray[mathRandomizeSelection(integerMax)];
+    randomPassword += randomInteger;
+  }
+  return randomPassword;
+};
 
+// runs the generate password function then applies the information to the HTML document.
+function writePassword() {
+  generatePassword();
+  const passwordText = document.querySelector("#password");
+  let password = randomPassword;
+  passwordText.value = password;
+};
 // Defining the buttons that are located on the HTML page.
 const $generateBtn = document.querySelector("#generate");
 const $parametersBtn = document.querySelector(`#set-parameters`);
 
 // Defining the functions that will be put into action when the buttons are clicked via event listener.
-$generateBtn.addEventListener(`click`, generatePassword);
+$generateBtn.addEventListener(`click`, writePassword);
 $parametersBtn.addEventListener(`click`, selectionsInterface);
-
-
-// Write password to the #password input
-function writePassword() {
-  const passwordText = document.querySelector("#password");
-  let password = generatePassword();
-  passwordText.value = password;
-}
-
-
