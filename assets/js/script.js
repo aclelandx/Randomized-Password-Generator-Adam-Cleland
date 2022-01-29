@@ -1,10 +1,10 @@
 // creating an object to hold all the information for the users selections on how they would like the password to be formatted.
 let userSelections = {
   characterLength: undefined,
-  lowerCase: undefined,
-  upperCase: undefined,
-  special: undefined,
-  numbers: undefined,
+  lowerCase: ``,
+  upperCase: ``,
+  special: ``,
+  numbers: ``,
 };
 
 // Defining the base characters to be used; and then converting it into their own arrays.
@@ -46,7 +46,6 @@ function selectionsInterface() {
     // Displays an error message when the input was not a number and closes the document. Also happens when cancel is selected.
   } else if (isNaN(lengthSelection)) {
     window.alert(`This Requires a valid input`);
-    return;
   }; return;
 };
 
@@ -59,7 +58,7 @@ function oneRequired() {
   userSelections.special = characterType(`Special Characters`, `(Example : !@#$%^&*`, arraySet.special);
 
   // Checks to make sure that the user has input at least one of the character types; provides the question if they would still like to generate a password, then re-directs to the correct path corresponding to their selection.
-  if (userSelections.lowerCase === false && userSelections.upperCase === false && userSelections.numbers === false && userSelections.special === false) {
+  if (!userSelections.lowerCase && !userSelections.upperCase && !userSelections.numbers && !userSelections.special) {
     window.alert(`You have to select at least one character type to generate a password`);
     if (window.confirm(`Would you still like to Generate a Password?`)) {
     oneRequired();
@@ -72,16 +71,15 @@ function characterType(charTypeName, example, arrayChoice) {
   let choice = confirm(`Would you like to include ` + charTypeName + ` in your password?` + example);
 
   // Adds the users selected choices into the masterArray variable.
-  if (choice === true) {
+  if (choice) {
     masterArray.unshift(arrayChoice);
-    console.log();
   };
   return choice;
 };
 
 // Mathematical formula to pick a size at random
 function mathRandomizeSelection(max) {
-  return Math.round(Math.random() * max);
+  return Math.round(Math.random() * (max - 1));
 };
 
 // Resets the current value of randomPassword to blank; flattens the masterArray to all be in one line then picks the amount of integers specified by the user and adds them to the randomPassword output
@@ -89,8 +87,10 @@ function generatePassword() {
   randomPassword = ``;
   masterArray = masterArray.flat(4);
   let integerMax = masterArray.length;
+
   for (var i = 0; i < userSelections.characterLength; i++) {
-    let randomInteger = masterArray[mathRandomizeSelection(integerMax)];
+    let r = mathRandomizeSelection(integerMax);
+    let randomInteger = masterArray[r];
     randomPassword += randomInteger;
   }
   return randomPassword;
